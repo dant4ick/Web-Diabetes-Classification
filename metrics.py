@@ -1,5 +1,4 @@
 import numpy as np
-from sklearn.metrics import roc_curve, auc
 import matplotlib.pyplot as plt
 
 def accuracy(y_true, y_pred):
@@ -37,3 +36,15 @@ def f1_score(y_true, y_pred):
 
     f1 = 2 * (prec * rec) / (prec + rec)
     return f1
+
+
+def plot_learning_curves(train_costs, test_costs):
+    iterations = len(train_costs)
+
+    plt.plot(range(1, iterations + 1), train_costs, label='Train Cost')
+    plt.plot(range(1, iterations + 1), test_costs, label='Test Cost')
+    plt.xlabel('Iterations')
+    plt.ylabel('Cost')
+    plt.legend()
+    plt.title('Learning Curves')
+    plt.show()

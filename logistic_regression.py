@@ -16,15 +16,26 @@ def compute_cost(X, y, weights, bias):
     return cost
 
 
-def gradient_descent(X, y, weights, bias, learning_rate, iterations):
+def gradient_descent(X, y, X_test, y_test, weights, bias, learning_rate, iterations):
     m = len(y)
+    train_costs = []
+    test_costs = []
+
     for _ in range(iterations):
-        predictions = sigmoid(np.dot(X, weights) + bias)
-        dw = 1 / m * np.dot(X.T, (predictions - y))
-        db = 1 / m * np.sum(predictions - y)
+        predictions_train = sigmoid(np.dot(X, weights) + bias)
+        cost_train = compute_cost(X, y, weights, bias)
+        train_costs.append(cost_train)
+
+        dw = 1 / m * np.dot(X.T, (predictions_train - y))
+        db = 1 / m * np.sum(predictions_train - y)
+
         weights -= learning_rate * dw
         bias -= learning_rate * db
-    return weights, bias
+
+        cost_test = compute_cost(X_test, y_test, weights, bias)
+        test_costs.append(cost_test)
+
+    return weights, bias, train_costs, test_costs
 
 
 def predict(X, weights, bias):
