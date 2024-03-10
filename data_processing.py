@@ -1,66 +1,26 @@
+"""
+This module contains functions for data preprocessing tasks such as splitting the data into train and test sets,
+standardizing the data, and oversampling the minority class using the SMOTE technique.
+"""
 from imblearn.over_sampling import SMOTE
 from collections import Counter
 import numpy as np
+import pandas as pd
 
 
-def check_missing_values(X):
-    # Count missing values for each feature
-    missing_values = X.isnull().sum()
+def train_test_split(X: pd.DataFrame, y: pd.Series, test_size: float = 0.2, random_state: int = 69) -> tuple:
+    """
+    Split the data into train and test sets.
 
-    # List of features with missing values and their most common values
-    features_with_missing_values = []
+    Args:
+        X (pd.DataFrame): Features data.
+        y (pd.Series): Target variable.
+        test_size (float, optional): Proportion of the dataset to include in the test split. Defaults to 0.2.
+        random_state (int, optional): Seed for the random number generator. Defaults to 69.
 
-    # Print information about missing values
-    for column, count in missing_values.items():
-        if count != 0:
-            print(f"\nFeature: {column}")
-            print(f"Number of missing values: {count}")
-
-            # Percentage of missing values in this feature
-            percentage_missing = (count / len(X)) * 100
-            print(f"Percentage of missing values: {percentage_missing:.2f}%")
-
-            # Most common value among the filled values for this feature
-            most_common_value = X[column].mode()[0]
-
-            # Percentage of the most common value among all values
-            percentage_most_common = (X[column].value_counts()[most_common_value] / len(X)) * 100
-            print(f"Most common value among filled values: {most_common_value}")
-            print(f"Percentage of the most common value: {percentage_most_common:.2f}%")
-
-            # Add to the list
-            features_with_missing_values.append((column, most_common_value))
-
-    return features_with_missing_values
-
-
-def replace_missing_values(X, replacements):
-    # Replace missing values
-    for feature, replacement_value in replacements:
-        X[feature].fillna(replacement_value, inplace=True)
-
-    return X
-
-
-def one_hot_encoding(X):
-    # List of categorical columns
-    categorical_columns = X.select_dtypes(include=['object']).columns
-
-    # Encode categorical data
-    for column in categorical_columns:
-        # Create new columns for each unique category
-        unique_values = X[column].unique()
-        for value in unique_values:
-            new_column_name = f"{column}_{value}"
-            X[new_column_name] = (X[column] == value).astype(int)
-
-        # Drop the original categorical column and one binary column
-        X = X.drop([column, f"{column}_{unique_values[0]}"], axis=1)
-
-    return X
-
-
-def train_test_split(X, y, test_size=0.2, random_state=69):
+    Returns:
+        tuple: Tuple containing the train and test sets (X_train, X_test, y_train, y_test).
+    """
     np.random.seed(random_state)
 
     # Shuffle the indices
@@ -80,7 +40,17 @@ def train_test_split(X, y, test_size=0.2, random_state=69):
     return X_train, X_test, y_train, y_test
 
 
-def standardize_data(X_train, X_test):
+def standardize_data(X_train: pd.DataFrame, X_test: pd.DataFrame) -> tuple:
+    """
+    Standardize the data by subtracting the mean and dividing by the standard deviation.
+
+    Args:
+        X_train (pd.DataFrame): Training features data.
+        X_test (pd.DataFrame): Test features data.
+
+    Returns:
+        tuple: Tuple containing the standardized training and test sets (X_train_standardized, X_test_standardized).
+    """
     # Calculate the mean and standard deviation for each feature in the training set
     mean_values = X_train.mean()
     std_dev_values = X_train.std()
@@ -94,13 +64,13 @@ def standardize_data(X_train, X_test):
     return X_train_standardized, X_test_standardized
 
 
-def balance_dataset(X, y):
+def balance_dataset(X: pd.DataFrame, y: pd.Series) -> tuple:
     """
     Balance the dataset using SMOTE oversampling technique.
 
     Args:
-        X (pandas.DataFrame): Features data.
-        y (pandas.Series): Target variable.
+        X (pd.DataFrame): Features data.
+        y (pd.Series): Target variable.
 
     Returns:
         tuple: Oversampled features and target data (X_resampled, y_resampled).

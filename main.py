@@ -1,11 +1,18 @@
-# main.py
+"""
+This is the main entry point for the logistic regression model training and evaluation.
+It loads the dataset, performs data preprocessing, trains the logistic regression model,
+evaluates its performance, and visualizes the learning curves.
+"""
 from ucimlrepo import fetch_ucirepo
-from data_processing import check_missing_values, replace_missing_values, one_hot_encoding, train_test_split, standardize_data
+from data_processing import train_test_split, standardize_data, balance_dataset
 from logistic_regression import initialize_parameters, gradient_descent, predict
 from metrics import accuracy, precision, recall, f1_score, plot_learning_curves
-from data_processing import balance_dataset
+
 
 def main():
+    """
+    Main function to run the logistic regression model training and evaluation.
+    """
     # Fetch the dataset
     cdc_diabetes_health_indicators = fetch_ucirepo(id=891)
 
@@ -13,6 +20,7 @@ def main():
     X_imbalanced = cdc_diabetes_health_indicators.data.features
     y_imbalanced = cdc_diabetes_health_indicators.data.targets
 
+    # Balance the dataset
     X, y = balance_dataset(X_imbalanced, y_imbalanced)
 
     # Print the metadata
@@ -20,15 +28,6 @@ def main():
 
     # Print the variable information
     print(cdc_diabetes_health_indicators.variables)
-
-    # Check for missing values
-    features_to_transform = check_missing_values(X)
-
-    # Replace missing values
-    X = replace_missing_values(X, features_to_transform)
-
-    # One-hot encoding for categorical features
-    X = one_hot_encoding(X)
 
     # Split data into train and test sets
     X_train, X_test, y_train, y_test = train_test_split(X, y)
@@ -48,7 +47,8 @@ def main():
     iterations = 300
 
     # Train the model
-    weights, bias, train_costs, test_costs = gradient_descent(X_train, y_train, X_test, y_test, weights, bias, learning_rate, iterations)
+    weights, bias, train_costs, test_costs = gradient_descent(X_train, y_train, X_test, y_test, weights, bias,
+                                                              learning_rate, iterations)
 
     # Predict on the test set
     predictions = predict(X_test, weights, bias)
