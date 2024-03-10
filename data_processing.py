@@ -1,21 +1,7 @@
-from ucimlrepo import fetch_ucirepo
-
-# Fetch the dataset
-cdc_diabetes_health_indicators = fetch_ucirepo(id=891)
-
-# Get the data as pandas dataframes
-X = cdc_diabetes_health_indicators.data.features
-y = cdc_diabetes_health_indicators.data.targets
-
-# Print the metadata
-print(cdc_diabetes_health_indicators.metadata)
-
-# Print the variable information
-print(cdc_diabetes_health_indicators.variables)
-
-# data_processing.py
-import pandas as pd
+from imblearn.over_sampling import SMOTE
+from collections import Counter
 import numpy as np
+
 
 def check_missing_values(X):
     # Count missing values for each feature
@@ -47,12 +33,14 @@ def check_missing_values(X):
 
     return features_with_missing_values
 
+
 def replace_missing_values(X, replacements):
     # Replace missing values
     for feature, replacement_value in replacements:
         X[feature].fillna(replacement_value, inplace=True)
 
     return X
+
 
 def one_hot_encoding(X):
     # List of categorical columns
@@ -70,6 +58,7 @@ def one_hot_encoding(X):
         X = X.drop([column, f"{column}_{unique_values[0]}"], axis=1)
 
     return X
+
 
 def train_test_split(X, y, test_size=0.2, random_state=69):
     np.random.seed(random_state)
@@ -90,6 +79,7 @@ def train_test_split(X, y, test_size=0.2, random_state=69):
 
     return X_train, X_test, y_train, y_test
 
+
 def standardize_data(X_train, X_test):
     # Calculate the mean and standard deviation for each feature in the training set
     mean_values = X_train.mean()
@@ -102,3 +92,26 @@ def standardize_data(X_train, X_test):
     X_test_standardized = (X_test - mean_values) / std_dev_values
 
     return X_train_standardized, X_test_standardized
+
+
+def balance_dataset(X, y):
+    """
+    Balance the dataset using SMOTE oversampling technique.
+
+    Args:
+        X (pandas.DataFrame): Features data.
+        y (pandas.Series): Target variable.
+
+    Returns:
+        tuple: Oversampled features and target data (X_resampled, y_resampled).
+    """
+    # Create a SMOTE object
+    smote = SMOTE()
+
+    # Apply SMOTE oversampling
+    X_resampled, y_resampled = smote.fit_resample(X, y)
+
+    print("Class distribution before oversampling:", Counter(y))
+    print("Class distribution after oversampling:", Counter(y_resampled))
+
+    return X_resampled, y_resampled
