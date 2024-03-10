@@ -17,11 +17,8 @@ def main():
     cdc_diabetes_health_indicators = fetch_ucirepo(id=891)
 
     # Get the data as pandas dataframes
-    X_imbalanced = cdc_diabetes_health_indicators.data.features
-    y_imbalanced = cdc_diabetes_health_indicators.data.targets
-
-    # Balance the dataset
-    X, y = balance_dataset(X_imbalanced, y_imbalanced)
+    X = cdc_diabetes_health_indicators.data.features
+    y = cdc_diabetes_health_indicators.data.targets
 
     # Print the metadata
     print(cdc_diabetes_health_indicators.metadata)
@@ -31,6 +28,9 @@ def main():
 
     # Split data into train and test sets
     X_train, X_test, y_train, y_test = train_test_split(X, y)
+
+    # Balance training data
+    X_train, y_train = balance_dataset(X_train, y_train)
 
     # Standardize the data
     X_train, X_test = standardize_data(X_train, X_test)
