@@ -3,7 +3,7 @@ This module contains functions for data preprocessing tasks such as splitting th
 standardizing the data, and oversampling the minority class using the SMOTE technique.
 """
 from imblearn.over_sampling import SMOTE
-from collections import Counter
+from sklearn.decomposition import PCA
 import numpy as np
 import pandas as pd
 
@@ -76,12 +76,30 @@ def balance_dataset(X: pd.DataFrame, y: pd.Series) -> tuple:
         tuple: Oversampled features and target data (X_resampled, y_resampled).
     """
     # Create a SMOTE object
-    smote = SMOTE()
+    smote = SMOTE(k_neighbors=8)
 
     # Apply SMOTE oversampling
     X_resampled, y_resampled = smote.fit_resample(X, y)
 
-    print("Class distribution before oversampling:", Counter(y))
-    print("Class distribution after oversampling:", Counter(y_resampled))
-
     return X_resampled, y_resampled
+
+def apply_pca(X_train, X_test, n_components):
+    """
+    Apply Principal Component Analysis (PCA) to the training and test data.
+
+    Parameters:
+    X_train (array-like): Training data of shape (n_samples, n_features).
+    X_test (array-like): Test data of shape (n_samples, n_features).
+    n_components (int or None): Number of principal components to retain.
+                                If None, all components are retained.
+
+    Returns:
+    tuple: Transformed training and test data.
+           X_train_pca (array-like): Transformed training data of shape (n_samples, n_components).
+           X_test_pca (array-like): Transformed test data of shape (n_samples, n_components).
+    """
+    pca = PCA(n_components=n_components)
+    X_train_pca = pca.fit_transform(X_train)
+    X_test_pca = pca.transform(X_test)
+    return X_train_pca, X_test_pca
+
