@@ -4,7 +4,7 @@ It loads the dataset, performs data preprocessing, trains the logistic regressio
 evaluates its performance, and visualizes the learning curves.
 """
 from ucimlrepo import fetch_ucirepo
-from data_processing import train_test_split, standardize_data, balance_dataset
+from data_processing import train_test_split, standardize_data, balance_dataset, apply_pca
 from logistic_regression import initialize_parameters, gradient_descent, predict
 from metrics import accuracy, precision, recall, f1_score, plot_learning_curves
 
@@ -20,17 +20,15 @@ def main():
     X = cdc_diabetes_health_indicators.data.features
     y = cdc_diabetes_health_indicators.data.targets
 
-    # Print the metadata
-    print(cdc_diabetes_health_indicators.metadata)
-
-    # Print the variable information
-    print(cdc_diabetes_health_indicators.variables)
-
     # Split data into train and test sets
-    X_train, X_test, y_train, y_test = train_test_split(X, y)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.8, random_state=42)
 
-    # Balance training data
+    # Reducing the dimension of the original dataset to 8 components
+    X_train, X_test = apply_pca(X_train, X_test, n_components=8)
+
+    # Balance data
     X_train, y_train = balance_dataset(X_train, y_train)
+    X_test, y_test = balance_dataset(X_test, y_test)
 
     # Standardize the data
     X_train, X_test = standardize_data(X_train, X_test)
@@ -43,8 +41,8 @@ def main():
     weights, bias = initialize_parameters(features)
 
     # Hyperparameters
-    learning_rate = 0.05
-    iterations = 300
+    learning_rate = 0.1
+    iterations = 1000
 
     # Train the model
     weights, bias, train_costs, test_costs = gradient_descent(X_train, y_train, X_test, y_test, weights, bias,
@@ -61,6 +59,7 @@ def main():
 
     # Plot the learning curves
     plot_learning_curves(train_costs, test_costs)
+
 
 
 if __name__ == '__main__':
