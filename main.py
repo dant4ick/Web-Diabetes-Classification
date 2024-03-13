@@ -43,7 +43,7 @@ def main():
 
     # Balance data
     X_train, y_train = balance_dataset(X_train, y_train)
-    X_test, y_test = balance_dataset(X_test, y_test)
+    # X_test, y_test = balance_dataset(X_test, y_test)
 
     # Standardize the data
     X_train, X_test = standardize_data(X_train, X_test)
