@@ -66,7 +66,7 @@ def plot_pca_scatter(X_train_pca):
         X_train_pca (np.ndarray): Transformed training data after applying PCA.
     """
     plt.figure(figsize=(8, 6))
-    plt.scatter(X_train_pca[:, 0], X_train_pca[:, 1], marker='o', color='black', s=5)
+    plt.scatter(X_train_pca[:, 0], X_train_pca[:, 1], marker='o', color='black', s=0.1)
     plt.xlabel('Principal Component 1')
     plt.ylabel('Principal Component 2')
     plt.title('PCA Scatter Plot')
