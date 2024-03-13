@@ -35,6 +35,12 @@ def main():
     # Plot the cumulative explained variance ratio for PCA
     plot_pca_explained_variance_ratio(X_train)
 
+    # Plot the PCA scatter plot
+    plot_pca_scatter(X_train)
+
+    # Plot the variances of PCA components
+    plot_pca_variance(X_train)
+
     # Balance data
     X_train, y_train = balance_dataset(X_train, y_train)
     X_test, y_test = balance_dataset(X_test, y_test)
@@ -68,12 +74,6 @@ def main():
 
     # Plot the learning curves
     plot_learning_curves(train_costs, test_costs)
-
-    # Plot the PCA scatter plot
-    plot_pca_scatter(X_train)
-
-    # Plot the variances of PCA components
-    plot_pca_variance(X_train)
 
 
 if __name__ == '__main__':
