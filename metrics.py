@@ -3,7 +3,6 @@ This module contains functions for evaluating the performance of a binary classi
 including accuracy, precision, recall, F1-score, and plotting the learning curves.
 """
 import numpy as np
-import matplotlib.pyplot as plt
 
 
 def accuracy(y_true: np.ndarray, y_pred: np.ndarray) -> float:
@@ -81,22 +80,3 @@ def f1_score(y_true: np.ndarray, y_pred: np.ndarray) -> float:
 
     f1 = 2 * (prec * rec) / (prec + rec)
     return f1
-
-
-def plot_learning_curves(train_costs: list, test_costs: list):
-    """
-    Plot the learning curves for training and test costs.
-
-    Args:
-        train_costs (list): List of training costs.
-        test_costs (list): List of test costs.
-    """
-    iterations = len(train_costs)
-
-    plt.plot(range(1, iterations + 1), train_costs, label='Train Cost')
-    plt.plot(range(1, iterations + 1), test_costs, label='Test Cost')
-    plt.xlabel('Iterations')
-    plt.ylabel('Cost')
-    plt.legend()
-    plt.title('Learning Curves')
-    plt.show()
